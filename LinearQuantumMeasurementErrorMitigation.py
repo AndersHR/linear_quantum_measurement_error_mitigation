@@ -1,13 +1,19 @@
 from qiskit import(
     IBMQ, QuantumCircuit
 )
-
 from numpy import(
     ndarray, asarray, zeros,
     sum, dot
 )
 
 from scipy.linalg import inv
+
+#
+# This class handles linear error mitigation for measurement errors on quantum computers.
+# The script is based of off IBM's qiskit tutorial on the subject:
+# https://qiskit.org/textbook/ch-quantum-hardware/measurement-error-mitigation.html
+#
+
 
 class LinearQuantumMeasurementErrorMitigation:
 
