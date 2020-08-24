@@ -15,7 +15,7 @@ from scipy.linalg import inv
 #
 
 
-class LinearQuantumMeasurementErrorMitigation:
+class MeasurementErrorMitigation:
 
     def __init__(self, n_qubits: int):
 
