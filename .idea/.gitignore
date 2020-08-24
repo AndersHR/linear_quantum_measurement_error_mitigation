@@ -1,7 +1,7 @@
 # Default ignored files
 /shelf/
 /workspace.xml
-.ipynb_checkpoints
-.ipynb_checkpoints/*
-__pycache__
-__pycache__/*
+/.ipynb_checkpoints/
+/.ipynb_checkpoints/*
+/__pycache__/
+/__pycache__/*
