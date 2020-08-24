@@ -1,8 +1,8 @@
-from qiskit import(
+from qiskit import (
     IBMQ, QuantumCircuit
 )
-from numpy import(
-    ndarray, asarray, zeros,
+from numpy import (
+    ndarray, asarray, zeros, empty,
     sum, dot
 )
 
@@ -20,7 +20,7 @@ class MeasurementErrorMitigation:
     def __init__(self, n_qubits: int):
 
         self.n_qubits = n_qubits
-        self.error_mitigation_matrix = None
+        self.error_mitigation_matrix = empty(0)
 
     def build_mitigation_circuit(self):
         circuits = []
@@ -51,11 +51,11 @@ class MeasurementErrorMitigation:
         self.error_mitigation_matrix = inv(matrix)
 
     def mitigate_errors(self, measurement_results: list or dict or ndarray) -> dict:
-        if self.error_mitigation_matrix == None:
+        if self.error_mitigation_matrix.shape[0] == 0:
             print("Error mitigation matrix not built")
             return {}
 
-        if type(measurement_results) == type(dict):
+        if type(measurement_results) == dict:
             vec = build_vector(measurement_results, self.n_qubits)
         elif type(measurement_results) == list:
             vec = asarray(measurement_results)
@@ -67,8 +67,14 @@ class MeasurementErrorMitigation:
 
         return build_dict(dot(self.error_mitigation_matrix, vec), self.n_qubits)
 
-
 # Utility functions:
+
+# qiskit returns measurement result counts in dictionaries on the form:
+# job.result.counts() = { "00000": 7000, "00001": 534, "00011": 12, ... , "11111": 35 }
+# computational basis states where the measurement result count was 0 are not included in the dict
+
+# This function builds a numpy array on the form
+# vec = numpy.ndarray( [ 7000, 534, 0, 12, .... , 35 ] )
 
 def build_vector(measurement_results: dict, n_qubits: int) -> ndarray:
     vec = zeros(2 ** n_qubits)
@@ -81,6 +87,9 @@ def build_vector(measurement_results: dict, n_qubits: int) -> ndarray:
 
     return vec
 
+
+# This function takes a numpy array on the form outputted from the function above,
+# and builds a dictionary on the same form as qiskit outputs the measurement results counts in
 
 def build_dict(vec: ndarray, n_qubits: int) -> dict:
     dic = {}

@@ -1,4 +1,4 @@
-from qiskit import(
+from qiskit import (
     IBMQ, QuantumCircuit, Aer, execute
 )
 from qiskit.providers.ibmq import least_busy
@@ -31,14 +31,15 @@ class IBMQHandler:
         else:
             self.credentials = credentials
 
-        provider = IBMQ.enable_account(credentials)
+        self.provider = IBMQ.enable_account(credentials)
 
     def find_least_busy(self):
         self.physical_backend = least_busy(self.provider.backends(filters=lambda x: x.configuration().n_qubits >= self.n_qubits and
                                    not x.configuration().simulator and x.status().operational==True))
-        print(self.physical_backend)
+        print(self.physical_backend.name())
 
-    def run_quantum_circuit(self, backend, shots: int, circuit: QuantumCircuit, noise_model: NoiseModel):
+    """
+    def run_quantum_circuit(self, backend, shots: int, circuit: QuantumCircuit, noise_model: NoiseModel = None):
         if noise_model == None:
             job = execute(circuit, backend=self.aer_backend, shots=self.shots)
         else:
@@ -48,19 +49,13 @@ class IBMQHandler:
         measurement_results = result.get_counts()
 
         return measurement_results
+    """
 
     def simulate_quantum_circuit(self, circuit: QuantumCircuit, noise_model: NoiseModel = None) -> dict:
-        return self.run_quantum_circuit(backend=self.aer_backend,
-                                   shots = self.shots,
-                                   circuit=circuit,
-                                   noise_model= noise_model)
+        if noise_model == None:
+            return execute(circuit, backend=self.aer_backend, shots=self.shots)
+        else:
+            return execute(circuit, backend=self.aer_backend, noise_model=noise_model, shots=self.shots)
 
-    def run_quantum_circuit_on_IBMQ(self, circuit: QuantumCircuit, noise_model: NoiseModel = None) -> dict:
-        if self.physical_backend == None:
-            print("Backend for IBMQ not set up")
-            return {}
-
-        return self.run_quantum_circuit(backend=self.physical_backend,
-                                   shots = self.shots,
-                                   circuit=circuit,
-                                   noise_model= noise_model)
+    def run_quantum_circuit_on_IBMQ(self, circuit: QuantumCircuit) -> dict:
+        return execute(circuit, backend=self.physical_backend, shots=self.shots)
