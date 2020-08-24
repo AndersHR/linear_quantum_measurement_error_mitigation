@@ -38,18 +38,9 @@ class IBMQHandler:
                                    not x.configuration().simulator and x.status().operational==True))
         print(self.physical_backend.name())
 
-    """
-    def run_quantum_circuit(self, backend, shots: int, circuit: QuantumCircuit, noise_model: NoiseModel = None):
-        if noise_model == None:
-            job = execute(circuit, backend=self.aer_backend, shots=self.shots)
-        else:
-            job = execute(circuit, backend=self.aer_backend, noise_model=noise_model, shots=self.shots)
-
-        result = job.result()
-        measurement_results = result.get_counts()
-
-        return measurement_results
-    """
+    def set_specific_backend(self, backend_name: str):
+        self.physical_backend = self.provider.get_backend(backend_name)
+        print(self.physical_backend.name())
 
     def simulate_quantum_circuit(self, circuit: QuantumCircuit, noise_model: NoiseModel = None) -> dict:
         if noise_model == None:
@@ -59,3 +50,6 @@ class IBMQHandler:
 
     def run_quantum_circuit_on_IBMQ(self, circuit: QuantumCircuit) -> dict:
         return execute(circuit, backend=self.physical_backend, shots=self.shots)
+
+    def retrieve_job(self, job_id: str):
+        return self.physical_backend.retrieve_job(job_id=job_id)
