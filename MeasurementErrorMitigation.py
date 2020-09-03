@@ -80,7 +80,7 @@ def build_vector(measurement_results: dict, n_qubits: int) -> ndarray:
     vec = zeros(2 ** n_qubits)
 
     for i in range(2 ** n_qubits):
-        bit_string = '{0:0{1}b}'.format(i, n_qubits)
+        bit_string = '{0:0{1}b}'.format(i, n_qubits)    # every n-bit bitstring
 
         if bit_string in measurement_results.keys():
             vec[i] = measurement_results[bit_string]
@@ -96,7 +96,7 @@ def build_dict(vec: ndarray, n_qubits: int) -> dict:
 
     for i in range(2 ** n_qubits):
         if vec[i] != 0:
-            bit_string = '{0:0{1}b}'.format(i, n_qubits)
+            bit_string = '{0:0{1}b}'.format(i, n_qubits)    # every n-bit bitstring
 
             dic[bit_string] = max(int(vec[i]), 0)
 

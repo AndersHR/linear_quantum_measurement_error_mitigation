@@ -36,7 +36,7 @@ class IBMQHandler:
     def find_least_busy(self):
         self.physical_backend = least_busy(self.provider.backends(filters=lambda x: x.configuration().n_qubits >= self.n_qubits and
                                    not x.configuration().simulator and x.status().operational==True))
-        print(self.physical_backend.name())
+        print("backend:", self.physical_backend.name())
 
     def set_specific_backend(self, backend_name: str):
         self.physical_backend = self.provider.get_backend(backend_name)
